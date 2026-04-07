@@ -1,28 +1,28 @@
-# Contributing to hk
+# Contributing to pulse
 
-Thanks for your interest in contributing! `hk` is a macOS health monitoring tool written in pure Swift with zero external dependencies. Contributions of all sizes are welcome.
+Thanks for your interest in contributing! `pulse` is a macOS health monitoring tool written in pure Swift with zero external dependencies. Contributions of all sizes are welcome.
 
 ## Ground rules
 
 - **No external Swift package dependencies.** The project intentionally uses only the Swift standard library, Foundation, and system frameworks (Darwin, IOKit, CoreWLAN, IOBluetooth, SwiftUI, etc.). Please don't add third-party packages.
-- **No `sudo`, no system file writes, no silent deletions.** The cleanup and process-management features are built around explicit user permission and protected-path checks. Any new destructive action must follow the same permission model (see `hk clean`).
+- **No `sudo`, no system file writes, no silent deletions.** The cleanup and process-management features are built around explicit user permission and protected-path checks. Any new destructive action must follow the same permission model (see `pulse clean`).
 - **macOS 14+ and Swift 5.9+.** Code should compile and run on the current supported target.
 
 ## Getting started
 
 ```sh
-git clone https://github.com/IvoryHeart/hk-mac.git
-cd hk-mac
+git clone https://github.com/IvoryHeart/pulse.git
+cd pulse
 swift build
-.build/debug/hk           # runs `hk status` by default
+.build/debug/pulse           # runs `pulse status` by default
 swift test                # run the test suite
 ```
 
 The project is a Swift Package with three products:
 
-- `HKCore` — library containing monitors, storage, and networking
-- `hk` — CLI executable and terminal UI
-- `HKApp` — SwiftUI menu bar app and dashboard
+- `PulseCore` — library containing monitors, storage, and networking
+- `pulse` — CLI executable and terminal UI
+- `PulseApp` — SwiftUI menu bar app and dashboard
 
 ## Development workflow
 
@@ -45,7 +45,7 @@ The project is a Swift Package with three products:
 Please open an issue with:
 
 - Your macOS version and hardware (Apple Silicon vs Intel)
-- The `hk` version / commit hash you're running
+- The `pulse` version / commit hash you're running
 - The exact command you ran and its output
 - What you expected to happen
 

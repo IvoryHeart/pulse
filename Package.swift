@@ -2,11 +2,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "housekeeping",
+    name: "pulse",
     platforms: [.macOS(.v14)],
     targets: [
         .target(
-            name: "HKCore",
+            name: "PulseCore",
             linkerSettings: [
                 .linkedFramework("IOKit"),
                 .linkedFramework("CoreWLAN"),
@@ -14,20 +14,20 @@ let package = Package(
             ]
         ),
         .executableTarget(
-            name: "hk",
-            dependencies: ["HKCore"]
+            name: "pulse",
+            dependencies: ["PulseCore"]
         ),
         .executableTarget(
-            name: "HKApp",
-            dependencies: ["HKCore"],
+            name: "PulseApp",
+            dependencies: ["PulseCore"],
             linkerSettings: [
                 .linkedFramework("SwiftUI"),
                 .linkedFramework("Charts"),
             ]
         ),
         .testTarget(
-            name: "HKCoreTests",
-            dependencies: ["HKCore"],
+            name: "PulseCoreTests",
+            dependencies: ["PulseCore"],
             linkerSettings: [
                 .linkedFramework("IOKit"),
                 .linkedFramework("CoreWLAN"),

@@ -1,8 +1,8 @@
-# hk -- Mac Housekeeping
+# pulse — macOS Health Monitor
 
 A health monitoring tool for macOS. CLI with a terminal dashboard, plus a SwiftUI menu bar app. Written in pure Swift with zero external dependencies.
 
-`hk` gives you a single health score (0--100) that summarizes the state of your Mac across CPU, memory, disk, thermals, battery, and runaway processes. Log snapshots to a local SQLite database and view trends over time with sparkline charts.
+`pulse` gives you a single health score (0--100) that summarizes the state of your Mac across CPU, memory, disk, thermals, battery, and runaway processes. Log snapshots to a local SQLite database and view trends over time with sparkline charts.
 
 ## Features
 
@@ -10,7 +10,7 @@ A health monitoring tool for macOS. CLI with a terminal dashboard, plus a SwiftU
 - **System dashboard** -- CPU, memory, disk, battery, thermal state, and top processes in one view
 - **Resource-heavy process finder** -- identifies CPU and memory hogs with actionable suggestions
 - **Cleanup scanner** -- finds reclaimable space in caches, logs, derived data, old downloads, and trash
-- **Health logging** -- record snapshots to SQLite (`~/.hk/health.db`) for longitudinal tracking
+- **Health logging** -- record snapshots to SQLite (`~/.pulse/health.db`) for longitudinal tracking
 - **History with sparklines** -- view CPU, memory, load, swap, and battery trends over time
 - **Network overview** -- active interfaces, WiFi signal quality, throughput, connections, services, home devices
 - **WiFi diagnostics** -- RSSI, noise floor, SNR, channel, band, PHY mode, transmit rate
@@ -19,63 +19,65 @@ A health monitoring tool for macOS. CLI with a terminal dashboard, plus a SwiftU
 - **Dashboard window** -- Charts framework sparklines, circular gauges, network cards, warnings panel
 - **Safe cleanup** -- protected paths, per-item confirmation, double-confirm for items over 1 GB, no sudo
 
-## Quick Start
+## Install
+
+### Homebrew (recommended)
 
 ```
-git clone <repo-url> && cd housekeeping
-swift build
-.build/debug/hk              # runs 'hk status' by default
+brew tap IvoryHeart/pulse
+brew install pulse
 ```
 
-For a release build:
+### From source
 
 ```
+git clone https://github.com/IvoryHeart/pulse.git && cd pulse
 swift build -c release
-cp .build/release/hk /usr/local/bin/hk
+cp .build/release/pulse /usr/local/bin/pulse
 ```
 
 To build and run the menu bar app:
 
 ```
-swift build --product HKApp
-.build/debug/HKApp
+swift build --product PulseApp
+.build/debug/PulseApp
 ```
 
 ## Command Reference
 
-### `hk status` (alias: `s`)
+### `pulse status` (alias: `s`)
 
-System health dashboard. This is the default command when you run `hk` with no arguments.
+System health dashboard. This is the default command when you run `pulse` with no arguments.
 
 Displays the health score, CPU/memory/disk/battery gauges, thermal state, load average, and the top 8 processes sorted by CPU. Warnings are shown for high swap, memory pressure, thermal throttling, and runaway processes.
 
 ```
-hk status
-hk status --json     # full system snapshot as JSON
+pulse status
+pulse status --json     # full system snapshot as JSON
 ```
 
-### `hk score`
+### `pulse score`
 
 Health score with a detailed breakdown of every deduction.
 
 Each deduction shows its category, label, explanation, and point penalty, sorted by severity. When no issues are detected the output confirms the system is healthy.
 
 ```
-hk score
-hk score --json
+pulse score
+pulse score --json
 ```
 
-### `hk hot` (alias: `h`)
+### `pulse hot` (alias: `h`)
 
 Find resource-heavy processes.
 
 Lists CPU-intensive processes (above 10% CPU) and memory-intensive processes (above 500 MB RSS). Includes swap pressure analysis and suggestions such as restarting heavy processes, closing redundant browsers, or freeing memory.
 
 ```
-hk hot
+pulse hot
 ```
 
-### `hk clean` (alias: `c`)
+### `pulse clean` (alias: `c`)
 
 Scan for cleanup opportunities.
 
@@ -95,52 +97,52 @@ By default this runs as a **dry run** -- it scans and reports reclaimable space 
 Items under 1 MB are hidden from the report.
 
 ```
-hk clean                # dry run -- scan only
-hk clean --confirm      # interactive cleanup with per-item confirmation
+pulse clean                # dry run -- scan only
+pulse clean --confirm      # interactive cleanup with per-item confirmation
 ```
 
 When `--confirm` is used, each item requires you to type the full word `yes` to delete. Items over 1 GB trigger a second confirmation. You can type `quit` at any prompt to stop. Protected paths (home directory, Documents, Desktop, Library root, system directories) are blocked and cannot be deleted.
 
-### `hk log` (alias: `l`)
+### `pulse log` (alias: `l`)
 
-Record a health snapshot to the SQLite database at `~/.hk/health.db`.
+Record a health snapshot to the SQLite database at `~/.pulse/health.db`.
 
 Each snapshot captures CPU, memory, disk, battery, thermal state, top processes, and the computed health score. Designed for periodic logging via cron or launchd.
 
 ```
-hk log                  # record a snapshot
-hk log --info           # show database path, snapshot count, time range
-hk log --prune          # remove snapshots older than 30 days
+pulse log                  # record a snapshot
+pulse log --info           # show database path, snapshot count, time range
+pulse log --prune          # remove snapshots older than 30 days
 ```
 
 **Tip** -- add a cron job to log every 15 minutes:
 
 ```
-*/15 * * * * /usr/local/bin/hk log
+*/15 * * * * /usr/local/bin/pulse log
 ```
 
-### `hk history` (alias: `hist`)
+### `pulse history` (alias: `hist`)
 
 View health trends with sparkline charts in the terminal.
 
 Displays sparklines for CPU usage, memory usage, load average, swap (GB), and battery percentage. Below the charts a summary shows min/avg/max for each metric, the time range, and a thermal state breakdown.
 
 ```
-hk history              # last 24 hours (default)
-hk history --1h         # last 1 hour
-hk history --6h         # last 6 hours
-hk history --12h        # last 12 hours
-hk history --7d         # last 7 days
-hk history --hours 48   # custom window
+pulse history              # last 24 hours (default)
+pulse history --1h         # last 1 hour
+pulse history --6h         # last 6 hours
+pulse history --12h        # last 12 hours
+pulse history --7d         # last 7 days
+pulse history --hours 48   # custom window
 ```
 
-### `hk net` (alias: `n`)
+### `pulse net` (alias: `n`)
 
 Network overview and monitoring. Without a subcommand, shows the full overview.
 
 ```
-hk net                  # overview (default)
-hk net --json           # overview as JSON
+pulse net                  # overview (default)
+pulse net --json           # overview as JSON
 ```
 
 The overview includes active interfaces, WiFi SSID and signal quality, gateway, DNS servers, a 1-second throughput sample, established connection count, top remote hosts, and device count on the local network.
@@ -149,26 +151,26 @@ The overview includes active interfaces, WiFi SSID and signal quality, gateway, 
 
 | Subcommand | Alias | Description |
 |------------|-------|-------------|
-| `hk net connections` | `conn` | Active TCP connections (up to 30 shown) with local port, remote address, and named remote port |
-| `hk net services` | `svc` | Connections grouped by service type (HTTPS, HTTP, SSH, DNS, etc.) with bar chart |
-| `hk net home` | `devices` | Devices on the home network from the ARP table. MAC addresses are logged to SQLite with first-seen and last-seen timestamps. Includes vendor hints for common manufacturers (Apple, Google, Raspberry Pi, Samsung, Amazon) |
-| `hk net wifi` | `signal` | WiFi signal diagnostics: SSID, BSSID, RSSI, noise floor, SNR, channel, band, channel width, PHY mode, transmit rate, transmit power, and a signal gauge |
-| `hk net speed` | -- | 2-second throughput measurement with download/upload rates and cumulative traffic since boot |
+| `pulse net connections` | `conn` | Active TCP connections (up to 30 shown) with local port, remote address, and named remote port |
+| `pulse net services` | `svc` | Connections grouped by service type (HTTPS, HTTP, SSH, DNS, etc.) with bar chart |
+| `pulse net home` | `devices` | Devices on the home network from the ARP table. MAC addresses are logged to SQLite with first-seen and last-seen timestamps. Includes vendor hints for common manufacturers (Apple, Google, Raspberry Pi, Samsung, Amazon) |
+| `pulse net wifi` | `signal` | WiFi signal diagnostics: SSID, BSSID, RSSI, noise floor, SNR, channel, band, channel width, PHY mode, transmit rate, transmit power, and a signal gauge |
+| `pulse net speed` | -- | 2-second throughput measurement with download/upload rates and cumulative traffic since boot |
 
 WiFi subcommand also supports JSON:
 
 ```
-hk net wifi --json
+pulse net wifi --json
 ```
 
 ### General
 
 ```
-hk help                 # show usage
-hk version              # print version (v0.4.0)
+pulse help                 # show usage
+pulse version              # print version (v0.4.0)
 ```
 
-## Menu Bar App (HKApp)
+## Menu Bar App (PulseApp)
 
 The menu bar app shows the health score in the system tray and opens a popover with:
 
@@ -195,14 +197,14 @@ The app polls every 3 seconds and retains the last 60 samples for sparklines. Th
 ## Architecture
 
 ```
-housekeeping/
+pulse/
   Package.swift
   Sources/
-    HKCore/                     # shared library
+    PulseCore/                     # shared library
       Models/
         HealthSnapshot.swift    # CPUInfo, MemoryInfo, DiskInfo, BatteryInfo, ThermalInfo
         HealthScore.swift       # HealthScore, ScoreDeduction, HealthScoreCalculator
-        ProcessInfo.swift       # HKProcessInfo with shortName extraction
+        ProcessInfo.swift       # PulseProcessInfo with shortName extraction
       System/
         CPUMonitor.swift        # CPU usage and load average
         MemoryMonitor.swift     # RAM, wired, compressed, swap
@@ -219,21 +221,21 @@ housekeeping/
         HealthStore.swift       # SQLite3 database (snapshots, processes, devices)
       Formatters/
         ByteFormatter.swift     # Human-readable byte formatting
-    hk/                         # CLI executable
+    pulse/                         # CLI executable
       main.swift                # Command router
       Commands/
-        StatusCommand.swift     # hk status
-        ScoreCommand.swift      # hk score
-        HotCommand.swift        # hk hot
-        CleanCommand.swift      # hk clean
-        LogCommand.swift        # hk log
-        HistoryCommand.swift    # hk history
-        NetCommand.swift        # hk net (all subcommands)
+        StatusCommand.swift     # pulse status
+        ScoreCommand.swift      # pulse score
+        HotCommand.swift        # pulse hot
+        CleanCommand.swift      # pulse clean
+        LogCommand.swift        # pulse log
+        HistoryCommand.swift    # pulse history
+        NetCommand.swift        # pulse net (all subcommands)
       UI/
         TerminalUI.swift        # ANSI colors, box drawing, gauges
         ProgressBar.swift       # Spinner animation
-    HKApp/                      # SwiftUI menu bar app
-      HKApp.swift               # @main App with MenuBarExtra + Window
+    PulseApp/                      # SwiftUI menu bar app
+      PulseApp.swift               # @main App with MenuBarExtra + Window
       ViewModels/
         SystemViewModel.swift   # @MainActor ObservableObject, polling, history
       Views/
@@ -247,9 +249,9 @@ Three targets in `Package.swift`:
 
 | Target | Type | Dependencies |
 |--------|------|--------------|
-| `HKCore` | Library | IOKit, CoreWLAN |
-| `hk` | Executable | HKCore |
-| `HKApp` | Executable | HKCore, SwiftUI, Charts |
+| `PulseCore` | Library | IOKit, CoreWLAN |
+| `pulse` | Executable | PulseCore |
+| `PulseApp` | Executable | PulseCore, SwiftUI, Charts |
 
 All frameworks are built into macOS. There are no external Swift package dependencies.
 
@@ -281,13 +283,13 @@ Penalties scale linearly within their ranges. For example, memory at 60% has no 
 
 ## Data Storage
 
-Health snapshots are stored in a SQLite database at `~/.hk/health.db`. The schema includes three tables:
+Health snapshots are stored in a SQLite database at `~/.pulse/health.db`. The schema includes three tables:
 
-- **snapshots** -- one row per `hk log` invocation with all system metrics and the health score
+- **snapshots** -- one row per `pulse log` invocation with all system metrics and the health score
 - **top_processes** -- top 10 processes per snapshot with CPU%, memory%, and RSS
 - **connection_log** -- network device sightings with MAC address, IP, hostname, and first/last seen timestamps
 
-Use `hk log --prune` to remove data older than 30 days.
+Use `pulse log --prune` to remove data older than 30 days.
 
 ## Requirements
 
