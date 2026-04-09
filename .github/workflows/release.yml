@@ -45,6 +45,12 @@ jobs:
       - name: Run tests
         run: swift test
 
+      - name: Package .app bundle and .dmg
+        run: |
+          chmod +x scripts/package-app.sh
+          scripts/package-app.sh --dmg
+          ls -lh Pulse-*.dmg
+
       - name: Compute source tarball SHA256
         id: sha
         run: |
@@ -61,20 +67,22 @@ jobs:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.tag }}
           generate_release_notes: true
+          files: Pulse-${{ steps.version.outputs.version }}.dmg
           body: |
             ## Install
 
+            **CLI (Homebrew):**
             ```
             brew tap IvoryHeart/pulse
             brew install pulse
             ```
 
-            Or from source:
+            **Menu bar app:** Download `Pulse-${{ steps.version.outputs.version }}.dmg` below, open it, and drag Pulse to Applications. On first launch, right-click the app → Open to bypass Gatekeeper (unsigned).
 
+            **From source:**
             ```
             git clone https://github.com/${{ github.repository }}.git
-            cd pulse
-            swift build -c release
+            cd pulse && swift build -c release
             ```
 
             **Source tarball SHA256:** `${{ steps.sha.outputs.sha256 }}`

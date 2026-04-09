@@ -20,6 +20,7 @@ let package = Package(
         .executableTarget(
             name: "PulseApp",
             dependencies: ["PulseCore"],
+            exclude: ["Info.plist"],
             linkerSettings: [
                 .linkedFramework("SwiftUI"),
                 .linkedFramework("Charts"),

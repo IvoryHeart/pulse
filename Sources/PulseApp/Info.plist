@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key>
+    <string>Pulse</string>
+    <key>CFBundleDisplayName</key>
+    <string>Pulse</string>
+    <key>CFBundleIdentifier</key>
+    <string>dev.ivoryheart.pulse</string>
+    <key>CFBundleVersion</key>
+    <string>0.2.0</string>
+    <key>CFBundleShortVersionString</key>
+    <string>0.2.0</string>
+    <key>CFBundleExecutable</key>
+    <string>PulseApp</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>LSUIElement</key>
+    <true/>
+    <key>LSMinimumSystemVersion</key>
+    <string>14.0</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Pulse monitors Bluetooth device connections.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Pulse reads WiFi SSID for network diagnostics.</string>
+</dict>
+</plist>

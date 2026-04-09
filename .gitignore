@@ -23,6 +23,10 @@ DerivedData/
 *.dSYM.zip
 *.dSYM
 
+# Packaged app bundle and disk image
+Pulse.app/
+*.dmg
+
 # Local databases / runtime data
 *.db
 *.sqlite
