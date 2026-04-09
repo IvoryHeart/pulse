@@ -21,11 +21,21 @@ A health monitoring tool for macOS. CLI with a terminal dashboard, plus a SwiftU
 
 ## Install
 
-### Homebrew (recommended)
+### CLI via Homebrew (recommended)
 
 ```
 brew tap IvoryHeart/pulse
 brew install pulse
+```
+
+### Menu bar app (.dmg)
+
+Download `Pulse-X.Y.Z.dmg` from [Releases](https://github.com/IvoryHeart/pulse/releases), open it, and drag Pulse to Applications. On first launch, right-click the app and select Open to bypass Gatekeeper (the app is unsigned).
+
+Alternatively, after dragging to Applications:
+
+```
+xattr -cr /Applications/Pulse.app
 ```
 
 ### From source
@@ -36,11 +46,12 @@ swift build -c release
 cp .build/release/pulse /usr/local/bin/pulse
 ```
 
-To build and run the menu bar app:
+To build and install the menu bar app locally:
 
 ```
-swift build --product PulseApp
-.build/debug/PulseApp
+./scripts/package-app.sh --install       # build .app and copy to /Applications
+./scripts/package-app.sh --dmg           # create a distributable .dmg
+./scripts/package-app.sh --install --dmg # both
 ```
 
 ## Command Reference
@@ -167,7 +178,8 @@ pulse net wifi --json
 
 ```
 pulse help                 # show usage
-pulse version              # print version (v0.4.0)
+pulse version              # print version
+man pulse                  # full man page
 ```
 
 ## Menu Bar App (PulseApp)
@@ -201,6 +213,7 @@ pulse/
   Package.swift
   Sources/
     PulseCore/                     # shared library
+      Version.swift             # single source of truth for version string
       Models/
         HealthSnapshot.swift    # CPUInfo, MemoryInfo, DiskInfo, BatteryInfo, ThermalInfo
         HealthScore.swift       # HealthScore, ScoreDeduction, HealthScoreCalculator
@@ -235,7 +248,8 @@ pulse/
         TerminalUI.swift        # ANSI colors, box drawing, gauges
         ProgressBar.swift       # Spinner animation
     PulseApp/                      # SwiftUI menu bar app
-      PulseApp.swift               # @main App with MenuBarExtra + Window
+      PulseApp.swift            # @main App with MenuBarExtra + Window
+      Info.plist                # Bundle metadata (LSUIElement, bundle ID)
       ViewModels/
         SystemViewModel.swift   # @MainActor ObservableObject, polling, history
       Views/
@@ -243,6 +257,17 @@ pulse/
         DashboardView.swift     # Dashboard window with Charts
         GaugeView.swift         # CircularGaugeView, SparklineView
         ProcessListView.swift   # Process table
+  docs/
+    pulse.1                     # man page
+  completions/
+    pulse.zsh                   # zsh completions
+    pulse.bash                  # bash completions
+    pulse.fish                  # fish completions
+  scripts/
+    package-app.sh              # build .app bundle and .dmg
+  .github/workflows/
+    ci.yml                      # build + test on push/PR
+    release.yml                 # tag → release + .dmg + tap formula update
 ```
 
 Three targets in `Package.swift`:

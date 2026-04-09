@@ -32,6 +32,22 @@ The project is a Swift Package with three products:
 4. **Run the test suite** with `swift test` and make sure everything passes.
 5. **Open a pull request** with a clear description of the change, the motivation, and any manual testing you did.
 
+CI runs automatically on every push and PR (build + test on macOS 15).
+
+## Releasing
+
+Releases are automated. To cut a new version:
+
+1. Bump `PulseVersion.current` in `Sources/PulseCore/Version.swift`.
+2. Commit, push, wait for CI green.
+3. Tag: `git tag -a vX.Y.Z -m "..." && git push origin vX.Y.Z`
+4. The release workflow builds the CLI, packages the `.dmg`, creates a GitHub release with the `.dmg` attached, and updates the Homebrew tap formula automatically.
+
+If adding a new CLI command, also update:
+- `docs/pulse.1` (man page)
+- `completions/pulse.{zsh,bash,fish}` (shell completions)
+- `README.md` (command reference)
+
 ## Coding guidelines
 
 - Follow existing Swift style in the codebase (4-space indent, trailing commas where present, `// MARK:` section dividers).
