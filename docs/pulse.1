@@ -1,0 +1,186 @@
+.TH PULSE 1 "April 2026" "pulse 0.2.0" "User Commands"
+.SH NAME
+pulse \- macOS health monitor
+.SH SYNOPSIS
+.B pulse
+[\fIcommand\fR] [\fIoptions\fR]
+.SH DESCRIPTION
+.B pulse
+monitors the health of your Mac across CPU, memory, disk, thermals, battery,
+and runaway processes. It computes a single health score from 0 to 100 and
+stores snapshots in a local SQLite database for longitudinal tracking.
+.PP
+Written in pure Swift with zero external dependencies.
+.SH COMMANDS
+.TP
+.BR status ", " s
+System health dashboard with gauges and top processes. This is the default
+command when
+.B pulse
+is invoked with no arguments.
+.TP
+.BR score
+Composite health score with a detailed breakdown of every deduction.
+.TP
+.BR hot ", " h
+Find resource\-heavy processes (CPU hogs, memory hogs, swap pressure).
+.TP
+.BR clean ", " c
+Scan for cleanup opportunities in caches, logs, old downloads, and trash.
+Dry run by default; use
+.B \-\-confirm
+for interactive deletion with per\-item confirmation.
+.TP
+.BR log ", " l
+Record a health snapshot to the SQLite database at
+.IR ~/.pulse/health.db .
+.TP
+.BR history ", " hist
+View health trends with sparkline charts in the terminal.
+.TP
+.BR net ", " n
+Network overview and monitoring. See
+.B NET SUBCOMMANDS
+below.
+.TP
+.BR bt ", " bluetooth
+Bluetooth devices and status.
+.TP
+.BR trend ", " trends
+Predictive trend analysis from historical snapshots.
+.TP
+.BR diff ", " compare
+Compare current system state versus N days ago.
+.TP
+.BR apps ", " profile
+App energy profiling showing CPU\-hours and efficiency grades.
+.TP
+.BR changelog ", " changes
+System changelog tracking app installs, updates, and removals.
+.TP
+.BR watch ", " w
+Live\-updating terminal dashboard (refreshes every 2 seconds by default).
+.TP
+.BR archive
+Database maintenance: stats, archiving old data, vacuuming, and JSON export.
+.TP
+.BR help
+Show usage information.
+.TP
+.BR version
+Print version and exit.
+.SH GLOBAL OPTIONS
+.TP
+.B \-\-json
+Output as JSON. Supported by: status, score, net, bt, trend, diff, apps.
+.TP
+.B \-\-help\fR, \fB\-h
+Show help.
+.TP
+.B \-\-version\fR, \fB\-v
+Show version.
+.SH LOG OPTIONS
+.TP
+.B \-\-info
+Show database path, snapshot count, and time range.
+.TP
+.B \-\-prune
+Remove snapshots older than 30 days.
+.SH HISTORY OPTIONS
+.TP
+.B \-\-1h\fR, \fB\-\-6h\fR, \fB\-\-12h\fR, \fB\-\-7d
+Time window shortcuts.
+.TP
+.B \-\-hours \fIN\fR
+Custom time window in hours.
+.SH NET SUBCOMMANDS
+.TP
+.BR overview
+Network overview with topology (default).
+.TP
+.BR topology ", " topo
+Detailed network map and device layout.
+.TP
+.BR bandwidth ", " bw
+Throughput and per\-service bandwidth chart.
+.TP
+.BR connections ", " conn
+Active TCP connections.
+.TP
+.BR services ", " svc
+Connections grouped by service type.
+.TP
+.BR home ", " devices
+Devices on the home network from the ARP table.
+.TP
+.BR wifi ", " signal
+WiFi signal diagnostics (RSSI, noise floor, SNR, channel, PHY mode).
+.TP
+.BR speed
+Live throughput monitor.
+.SH DIFF OPTIONS
+.TP
+.B \-\-1d\fR, \fB\-\-7d\fR, \fB\-\-30d
+Time period to compare against (default: 7d).
+.SH APPS OPTIONS
+.TP
+.B \-\-1d\fR, \fB\-\-7d\fR, \fB\-\-30d
+Time period for profiling (default: 7d).
+.SH CHANGELOG SUBCOMMANDS
+.TP
+.BR scan
+Scan now and record changes.
+.TP
+.B \-\-30d
+Show changes from the last 30 days.
+.SH ARCHIVE SUBCOMMANDS
+.TP
+.BR run
+Archive old data and vacuum.
+.TP
+.BR export
+Export recent data as JSON.
+.TP
+.BR stats
+Detailed database statistics.
+.SH WATCH OPTIONS
+.TP
+.B \-i \fIN\fR
+Refresh interval in seconds (default: 2).
+.SH CLEAN OPTIONS
+.TP
+.B \-\-confirm
+Actually delete with per\-item confirmation. Items over 1\ GB trigger a
+second confirmation. Type
+.B yes
+(not just
+.BR y )
+to confirm each deletion. Type
+.B quit
+to stop.
+.SH FILES
+.TP
+.I ~/.pulse/health.db
+SQLite database storing health snapshots, top processes, and network device
+sightings.
+.SH EXAMPLES
+.nf
+pulse                  # system health dashboard (default)
+pulse score --json     # health score as JSON
+pulse hot              # find resource-heavy processes
+pulse clean --confirm  # interactive cleanup
+pulse log              # record snapshot
+pulse history --7d     # 7-day trend sparklines
+pulse net wifi         # WiFi signal diagnostics
+pulse watch -i 5       # live dashboard, 5s refresh
+pulse trend            # predictive analysis
+.fi
+.SH REQUIREMENTS
+macOS 14.0 (Sonoma) or later. Apple Silicon or Intel.
+.SH AUTHORS
+IvoryHeart
+.SH SEE ALSO
+.BR top (1),
+.BR vm_stat (1),
+.BR sysctl (8),
+.BR pmset (1)
